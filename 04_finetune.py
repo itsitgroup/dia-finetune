@@ -15,8 +15,10 @@ BOS = dia.config.data.audio_bos_value        # 1026
 PAD = dia.config.data.audio_pad_value        # 1025
 
 # ---- freeze everything except decoder & its embeddings ----
-for p in dia.model.parameters(): p.requires_grad_(False)
-for p in dia.model.decoder.parameters(): p.requires_grad_(True)
+for p in dia.model.parameters():
+    p.requires_grad_(False)
+for p in dia.model.decoder.parameters():
+    p.requires_grad_(True)
 
 ds = CryingDataset("crying/manifest.csv", dia.config)
 loader = DataLoader(ds, batch_size=4, shuffle=True, num_workers=2, pin_memory=True)
@@ -32,11 +34,17 @@ for epoch in range(EPOCHS):
         txt, aud = txt.to(device), aud.to(device)
 
         # ---- encoder ----
-        src = txt.unsqueeze(1)               # [B,1,Ttxt]  matches EncoderInferenceState.new()
+        src = txt.unsqueeze(1)               # [B,1,Ttxt]
         enc_state = EncoderInferenceState.new(dia.config, src)
-        enc_out   = dia.model.encoder(txt, enc_state)        # txt:[B,Ttxt]
 
-        # ---- cross-attn cache for every decoder layer ----
+        # 🛠️ FIX: Trim state tensors to actual batch size (handles over-expansion)
+        B = txt.size(0)
+        enc_state.padding_mask = enc_state.padding_mask[:B]
+        enc_state.attn_mask    = enc_state.attn_mask[:B]
+
+        enc_out = dia.model.encoder(txt, enc_state)  # txt:[B,Ttxt]
+
+        # ---- cross-attn cache for decoder ----
         cross_cache = dia.model.decoder.precompute_cross_attn_cache(
             enc_out, enc_state.positions, enc_state.padding_mask
         )
@@ -47,12 +55,13 @@ for epoch in range(EPOCHS):
         # ---- teacher forcing ----
         tgt_in  = aud[:, :-1, :]             # drop last frame
         tgt_out = aud[:, 1:, :]              # next-frame target
-        logits  = dia.model.decoder(tgt_in, dec_state)       # [B,T-1,C,V]
+
+        logits = dia.model.decoder(tgt_in, dec_state)  # [B,T-1,C,V]
 
         # reshape for CE loss
-        logits  = logits.reshape(-1, V)                      # [(B*T-1*C),V]
-        tgt_out = tgt_out.reshape(-1)                       # [(B*T-1*C)]
-        loss    = criterion(logits, tgt_out)
+        logits = logits.reshape(-1, V)                   # [(B*T-1*C),V]
+        tgt_out = tgt_out.reshape(-1)                    # [(B*T-1*C)]
+        loss = criterion(logits, tgt_out)
 
         optimizer.zero_grad()
         loss.backward()
