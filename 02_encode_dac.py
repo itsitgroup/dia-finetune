@@ -1,4 +1,4 @@
-import numpy as np, pandas as pd, torch, pathlib, tqdm
+import numpy as np, pandas as pd, pathlib, tqdm
 import torchaudio
 from dia.model import Dia
 
