@@ -8,7 +8,7 @@ with open(SRC_ROOT / "Nonverbal_Vocalization.json") as f:
     meta = json.load(f)
 
 entries = []
-for item in meta:
+for i, item in enumerate(meta):
     if item["label"] != "crying":           # keep only crying class
         continue
     in_wav = SRC_ROOT / item["path"]        # e.g.  WAV/crying/000123.wav
