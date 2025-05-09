@@ -8,20 +8,21 @@ with open(SRC_ROOT / "Nonverbal_Vocalization.json") as f:
     meta = json.load(f)
 
 entries = []
-for i, item in enumerate(meta):
-    if item["label"] != "crying":           # keep only crying class
+for class_name, files in meta.items():
+    if class_name != "crying":   # ✅ keep only crying class
         continue
-    in_wav = SRC_ROOT / item["path"]        # e.g.  WAV/crying/000123.wav
-    out_wav = DST_WAV / in_wav.name
-    # ---- resample to 44 100 Hz mono ----
-    wav, sr = torchaudio.load(in_wav)
-    if sr != 44_100:
-        wav = torchaudio.functional.resample(wav, sr, 44_100)
-    if wav.shape[0] > 1:                    # stereo → mono
-        wav = wav.mean(0, keepdim=True)
-    sf.write(out_wav, wav.squeeze().numpy(), 44_100)
-    # ---- transcript ----
-    txt = "[S1] (crying)"
-    entries.append({"path": str(out_wav), "text": txt})
+    for file_name, file_meta in files.items():
+        in_wav = SRC_ROOT / class_name / file_name  # e.g. data/NonverbalVocalization/crying/000123.wav
+        out_wav = DST_WAV / file_name
+        # ---- resample to 44 100 Hz mono ----
+        wav, sr = torchaudio.load(in_wav)
+        if sr != 44_100:
+            wav = torchaudio.functional.resample(wav, sr, 44_100)
+        if wav.shape[0] > 1:  # stereo → mono
+            wav = wav.mean(0, keepdim=True)
+        sf.write(out_wav, wav.squeeze().numpy(), 44_100)
+        # ---- transcript ----
+        txt = "[S1] (crying)"
+        entries.append({"path": str(out_wav), "text": txt})
 pd.DataFrame(entries).to_csv(MANIFEST, index=False)
 print(f"Manifest with {len(entries)} crying clips written to {MANIFEST}")
