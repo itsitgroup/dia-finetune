@@ -1,6 +1,6 @@
 import torchaudio, soundfile as sf, pandas as pd, json, pathlib
 
-SRC_ROOT   = pathlib.Path("data/Nonverbal_Vocalization")
+SRC_ROOT   = pathlib.Path("data/NonverbalVocalization")
 DST_WAV    = pathlib.Path("crying/wav_44k");  DST_WAV.mkdir(parents=True, exist_ok=True)
 MANIFEST   = pathlib.Path("crying/manifest.csv")
 
