@@ -7,7 +7,7 @@ dia = Dia.from_pretrained(
     compute_dtype="float32",   # FULL float32 for stable decoding
     load_dac=True
 )
-dia.model.load_state_dict(torch.load("dia_crying_finetuned.pt"), strict=False)
+# dia.model.load_state_dict(torch.load("dia_crying_finetuned.pt"), strict=False)
 
 txt = "[S1] Hello how are you?"
 wav = dia.generate(txt, temperature=1.2, top_p=0.95, verbose=True)
