@@ -1,7 +1,7 @@
 import torch, numpy as np, pandas as pd
 
 class CryingDataset(torch.utils.data.Dataset):
-    def __init__(self, manifest_path, dia_config):
+    def __init__(self, manifest_path, dia_config, max_frames=256):
         self.df = pd.read_csv(manifest_path)
         self.cfg = dia_config
         self.text_pad = self.cfg.data.text_pad_value
@@ -9,6 +9,7 @@ class CryingDataset(torch.utils.data.Dataset):
         self.audio_pad = self.cfg.data.audio_pad_value
         self.audio_bos = self.cfg.data.audio_bos_value
         self.max_aud   = self.cfg.data.audio_length
+        self.max_aud   = max_frames 
 
     def __len__(self):
         return len(self.df)
