@@ -10,5 +10,5 @@ dia = Dia.from_pretrained(
 # dia.model.load_state_dict(torch.load("dia_crying_finetuned.pt"), strict=False)
 
 txt = "[S1] Hello how are you?"
-wav = dia.generate(txt, temperature=1.2, top_p=0.95, verbose=True)
+wav = dia.generate(txt, use_torch_compile=True, verbose=True)
 dia.save_audio("crying_demo.wav", wav)
