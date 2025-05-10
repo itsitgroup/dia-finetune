@@ -34,8 +34,8 @@ print(f"[DEBUG]  GPU after model load : {torch.cuda.memory_allocated()/1e9:.2f} 
 # 2. Shrink decoder sequence length to save VRAM
 #    We never need the default 3072 frames for short crying clips
 # ------------------------------------------------------------------
-MAX_FRAMES = 256                     # <= 3 s @ 86 fps
-dia.config.data.audio_length = MAX_FRAMES
+MAX_FRAMES = 256
+object.__setattr__(dia.config.data, "audio_length", MAX_FRAMES)
 
 # ------------------------------------------------------------------
 # 3. Freeze everything except decoder + its embeddings
