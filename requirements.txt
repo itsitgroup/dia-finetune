@@ -1,0 +1,9 @@
+certifi==2025.1.31
+cffi==1.17.1
+numpy==2.2.5
+packaging==25.0
+pip==25.0.1
+pybind11==2.13.6
+pycparser==2.22
+setuptools==79.0.1
+wheel==0.45.1
