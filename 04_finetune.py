@@ -4,6 +4,9 @@ from dia.model import Dia
 from dataset import CryingDataset
 from dia.state import EncoderInferenceState, DecoderInferenceState
 
+torch.cuda.empty_cache()
+print(f"Before loading: {torch.cuda.memory_allocated() / 1024**3:.2f} GB used")
+
 device = "cuda"
 dia = Dia.from_pretrained(
     "nari-labs/Dia-1.6B",
@@ -11,6 +14,8 @@ dia = Dia.from_pretrained(
     device=device,
     load_dac=False
 )
+
+print(f"After loading: {torch.cuda.memory_allocated() / 1024**3:.2f} GB used")
 
 V = dia.config.model.tgt_vocab_size
 PAD = dia.config.data.audio_pad_value
