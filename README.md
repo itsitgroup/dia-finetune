@@ -10,7 +10,7 @@ The numbered scripts form a linear pipeline:
 | 2 | `02_encode_dac.py` | Runs Dia’s discrete‑audio‑codec over each wav, saving token sequences in `crying/dac_tokens/` |
 | 3 | `03_finetune.py` | Fine‑tunes **only** the Dia decoder on the token/text pairs |
 | 4 | `04_test.py` | Loads the checkpoint from step 3 and synthesises a short demo wav |
-| 5 | `dataset.py` |  |
+| 5 | `dataset.py` | Defines the CryingDataset class, which prepares and returns (text, audio, valid_len) training samples from the manifest and DAC token files for fine-tuning the Dia model. |
 
 ```bash
 ├── 01_prepare_manifest.py
