@@ -88,20 +88,6 @@ python 03_finetune.py
 python 04_test.py
 ```
 
-> **Tip:** export `PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True"` to reduce CUDA OOM likelihood.
-
----
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| CUDA out‑of‑memory in step 2 | Lower `--batch_size` or run on CPU (slower) |
-| `FileNotFoundError: ... NonverbalVocalization ...` | Check dataset path or tweak `SRC_ROOT` |
-| `ModuleNotFoundError: dia` | Re‑run the Dia install line inside the active venv |
-
----
-
 ## Citation
 
 ```bibtex
